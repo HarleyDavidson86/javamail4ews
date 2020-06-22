@@ -536,14 +536,12 @@ public class EwsFolder extends javax.mail.Folder
 		FolderView lFolderView = new FolderView(ITEM_VIEW_MAX_ITEMS);
 		try
 		{
-			System.out.println("Suche in Folder " + folder.getDisplayName());
 			List<Folder> lFindFoldersResults = new ArrayList<Folder>();
 			FindFoldersResults findFolderResults = getService().findFolders(folder.getId(), lFolderView);
 			for (Folder folder : findFolderResults)
 			{
 				lFindFoldersResults.add(folder);
 			}
-			System.out.println("Anzahl Ordner in Folder: " + lFindFoldersResults.size());
 			EwsFolder[] retValue = new EwsFolder[lFindFoldersResults.size()];
 			for (int i = 0; i < retValue.length; i++)
 			{

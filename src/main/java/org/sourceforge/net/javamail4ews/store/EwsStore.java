@@ -102,28 +102,51 @@ public class EwsStore extends Store
 	@Override
 	public EwsFolder getFolder(String name) throws MessagingException
 	{
-		Optional<WellKnownFolderName> wellKnownFolderName = getWellKnownFolderName(name);
+		String[] folderNames = name.split("/");
+		System.out.println("Suche '" + folderNames[0] + "'");
+		Optional<WellKnownFolderName> wellKnownFolderName = getWellKnownFolderName(folderNames[0]);
+		EwsFolder rootFolder = null;
 		if (wellKnownFolderName.isPresent())
 		{
-			System.out.println(String.format("Opening WellKnownFolderName matching %s", name));
+			System.out.println(String.format("Opening WellKnownFolderName matching %s", folderNames[0]));
 			if (sharedAccountAddress != null)
 			{
-				return new EwsFolder(this, new FolderId(wellKnownFolderName.get(), new Mailbox(sharedAccountAddress)),
+				rootFolder = new EwsFolder(this,
+						new FolderId(wellKnownFolderName.get(), new Mailbox(sharedAccountAddress)),
 						sharedAccountAddress);
 			}
 			else
 			{
-				return new EwsFolder(this, new FolderId(wellKnownFolderName.get()), sharedAccountAddress);
+				rootFolder = new EwsFolder(this, new FolderId(wellKnownFolderName.get()), sharedAccountAddress);
 			}
 		}
 		try
 		{
-			return getDefaultFolder().getFolder(name);
+			if (rootFolder == null)
+			{
+				rootFolder = getDefaultFolder().getFolder(name);
+			}
 		}
 		catch (Exception e)
 		{
 			throw new MessagingException(e.getMessage(), e);
 		}
+
+		if (rootFolder == null)
+		{
+			throw new MessagingException("RootFolder '" + folderNames[0] + "' not found.");
+		}
+
+		// Unterverzeichnisse finden
+		EwsFolder result = rootFolder;
+		for (int i = 1; i < folderNames.length; i++)
+		{
+			String fname = folderNames[i];
+			System.out.println("Suche '" + fname + "'");
+			result = result.getFolder(fname);
+		}
+		return result;
+
 	}
 
 	@Override
