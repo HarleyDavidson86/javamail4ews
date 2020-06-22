@@ -126,7 +126,7 @@ public class EwsFolder extends javax.mail.Folder
 				.getString("org.sourceforge.net.javamail4ews.store.EwsFolder.ConflictResolutionMode", "AutoResolve"));
 		DELETE_MODE = DeleteMode.valueOf(
 				config.getString("org.sourceforge.net.javamail4ews.store.EwsFolder.DeleteMode", "MoveToDeletedItems"));
-		prefetchItems = config.getBoolean("org.sourceforge.net.javamail4ews.store.EwsFolder.prefetchItems", false);
+		prefetchItems = config.getBoolean("org.sourceforge.net.javamail4ews.store.EwsFolder.prefetchItems", true);
 		try
 		{
 			if (sharedAccountAddress != null)

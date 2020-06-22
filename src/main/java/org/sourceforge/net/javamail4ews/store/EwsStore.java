@@ -103,7 +103,6 @@ public class EwsStore extends Store
 	public EwsFolder getFolder(String name) throws MessagingException
 	{
 		String[] folderNames = name.split("/");
-		System.out.println("Suche '" + folderNames[0] + "'");
 		Optional<WellKnownFolderName> wellKnownFolderName = getWellKnownFolderName(folderNames[0]);
 		EwsFolder rootFolder = null;
 		if (wellKnownFolderName.isPresent())
@@ -124,7 +123,7 @@ public class EwsStore extends Store
 		{
 			if (rootFolder == null)
 			{
-				rootFolder = getDefaultFolder().getFolder(name);
+				rootFolder = getDefaultFolder().getFolder(folderNames[0]);
 			}
 		}
 		catch (Exception e)
@@ -142,7 +141,6 @@ public class EwsStore extends Store
 		for (int i = 1; i < folderNames.length; i++)
 		{
 			String fname = folderNames[i];
-			System.out.println("Suche '" + fname + "'");
 			result = result.getFolder(fname);
 		}
 		return result;
