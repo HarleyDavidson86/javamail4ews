@@ -92,9 +92,9 @@ public class EwsStore extends Store
 			FolderId folderToAccess = new FolderId(WellKnownFolderName.MsgFolderRoot);
 			if (sharedAccountAddress != null)
 			{
-				folderToAccess = new FolderId(WellKnownFolderName.MsgFolderRoot, new Mailbox(sharedAccountAddress));
+				folderToAccess = new FolderId(WellKnownFolderName.Inbox, new Mailbox(sharedAccountAddress));
 			}
-			defaultFolder = new EwsFolder(this, folderToAccess);
+			defaultFolder = new EwsFolder(this, folderToAccess, sharedAccountAddress);
 		}
 		return defaultFolder;
 	}
@@ -106,7 +106,15 @@ public class EwsStore extends Store
 		if (wellKnownFolderName.isPresent())
 		{
 			System.out.println(String.format("Opening WellKnownFolderName matching %s", name));
-			return new EwsFolder(this, new FolderId(wellKnownFolderName.get()));
+			if (sharedAccountAddress != null)
+			{
+				return new EwsFolder(this, new FolderId(wellKnownFolderName.get(), new Mailbox(sharedAccountAddress)),
+						sharedAccountAddress);
+			}
+			else
+			{
+				return new EwsFolder(this, new FolderId(wellKnownFolderName.get()), sharedAccountAddress);
+			}
 		}
 		try
 		{
@@ -119,7 +127,6 @@ public class EwsStore extends Store
 	}
 
 	@Override
-	@SuppressWarnings("resource")
 	public EwsFolder getFolder(URLName paramUrl) throws MessagingException
 	{
 		if (paramUrl == null)

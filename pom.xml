@@ -7,7 +7,7 @@
 
     <groupId>org.gartcimore.java</groupId>
     <artifactId>javamail4ews</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
 
     <name>JavaMail 4 EWS</name>
