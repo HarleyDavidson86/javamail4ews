@@ -18,8 +18,10 @@
 package org.sourceforge.net.javamail4ews.store;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -350,8 +352,16 @@ public class EwsFolder extends javax.mail.Folder
 	{
 		EwsFolder[] result = list(name);
 		if (result == null || result.length == 0)
+		{
 			throw new MessagingException("Folder not found");
-		return result[0];
+		}
+		Optional<EwsFolder> findFirst = Arrays.asList(result).stream().filter(f -> f.getName().equalsIgnoreCase(name))
+				.findFirst();
+		if (findFirst.isPresent())
+		{
+			return findFirst.get();
+		}
+		throw new MessagingException("Folder not found");
 	}
 
 	@Override
@@ -526,12 +536,14 @@ public class EwsFolder extends javax.mail.Folder
 		FolderView lFolderView = new FolderView(ITEM_VIEW_MAX_ITEMS);
 		try
 		{
+			System.out.println("Suche in Folder " + folder.getDisplayName());
 			List<Folder> lFindFoldersResults = new ArrayList<Folder>();
 			FindFoldersResults findFolderResults = getService().findFolders(folder.getId(), lFolderView);
 			for (Folder folder : findFolderResults)
 			{
 				lFindFoldersResults.add(folder);
 			}
+			System.out.println("Anzahl Ordner in Folder: " + lFindFoldersResults.size());
 			EwsFolder[] retValue = new EwsFolder[lFindFoldersResults.size()];
 			for (int i = 0; i < retValue.length; i++)
 			{
